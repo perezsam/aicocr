@@ -18,6 +18,23 @@ from model import Model
 from test import validation
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# load textfile of characters to list
+def textfile_to_list(filepath):
+    
+    lines_list = []
+    
+    with open(filepath, encoding='utf-8') as fp:
+        line = fp.readline()
+        cnt = 1
+        while line:
+                        
+            lines_list.append(line.strip()) # removes any leading and trailing characters       
+            line = fp.readline()
+            cnt += 1
+            
+    return lines_list
+
+
 
 def train(opt):
     """ dataset preparation """
@@ -225,6 +242,7 @@ def train(opt):
             sys.exit()
         iteration += 1
 
+char_loaded = textfile_to_list('./characters/zh_en.txt')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -286,8 +304,9 @@ if __name__ == '__main__':
     """ vocab / character number configuration """
     if opt.sensitive:
         # opt.character += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        opt.character = string.printable[:-6]  # same with ASTER setting (use 94 char).
-
+        #opt.character = string.printable[:-6]  # same with ASTER setting (use 94 char).
+        opt.character = char_loaded
+        
     """ Seed and GPU setting """
     # print("Random Seed: ", opt.manualSeed)
     random.seed(opt.manualSeed)
