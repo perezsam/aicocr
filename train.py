@@ -34,7 +34,7 @@ def textfile_to_list(filepath):
             
     return lines_list
 
-
+char_loaded = textfile_to_list('./characters/zh_TW.txt')
 
 def train(opt):
     """ dataset preparation """
@@ -232,8 +232,8 @@ def train(opt):
                 print(predicted_result_log)
                 log.write(predicted_result_log + '\n')
 
-        # save model per 1e+5 iter.
-        if (iteration + 1) % 1e+5 == 0:
+        # save model per 1e+3 iter.
+        if (iteration + 1) % 1e+3 == 0:
             torch.save(
                 model.state_dict(), f'./saved_models/{opt.exp_name}/iter_{iteration+1}.pth')
 
@@ -241,8 +241,6 @@ def train(opt):
             print('end the training')
             sys.exit()
         iteration += 1
-
-char_loaded = textfile_to_list('./characters/zh_en.txt')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -302,10 +300,10 @@ if __name__ == '__main__':
     os.makedirs(f'./saved_models/{opt.exp_name}', exist_ok=True)
 
     """ vocab / character number configuration """
-    if opt.sensitive:
-        # opt.character += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        opt.character = string.printable[:-6] + char_loaded # same with ASTER setting (use 94 char).
-        #opt.character = char_loaded
+    #if opt.sensitive:
+    # opt.character += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    opt.character = string.printable[:-6] + ''.join(char_loaded)  # same with ASTER setting (use 94 char), adding a list of 11733 chinese characters
+    print(f'Evaluating characters: {len(opt.character)}')
         
     """ Seed and GPU setting """
     # print("Random Seed: ", opt.manualSeed)
